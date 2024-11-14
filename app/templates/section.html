@@ -1,0 +1,32 @@
+<div class="section" id="section-{{ index }}">
+    <h1>{{ section['section_title']|safe }}</h1>
+    {{ section['theory']|safe }}
+
+    <div class="question-block">
+        <div class="question-content">
+            {{ section['question']|safe }} {% if index == progress and form %}
+            <form
+                method="POST"
+                class="answer-form"
+                data-section-index="{{ index }}"
+                onsubmit="return false;"
+            >
+                {{ form.hidden_tag() }}
+                <div class="input-submit-container">
+                    {{ form.answer(size=40, value="") }} {{ form.submit() }}
+                </div>
+            </form>
+            {% endif %}
+        </div>
+
+        {% if feedback.get(index|string) %}
+        <div class="feedback-container">
+            <p class="feedback {{ feedback[index|string]['type'] }}">
+                <span class="feedback-message"
+                    >{{ feedback[index|string]['message'] }}</span
+                >
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>

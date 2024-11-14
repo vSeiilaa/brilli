@@ -1,0 +1,9 @@
+<!-- templates/completion_message.html -->
+<div class="completion-message">
+    <h2>Lesson Completed!</h2>
+    {% if next_lesson_url %}
+    <a href="{{ next_lesson_url }}" class="btn">Go to Next Lesson</a>
+    {% else %}
+    <a href="{{ url_for('course_complete') }}" class="btn">Finish Course</a>
+    {% endif %}
+</div>

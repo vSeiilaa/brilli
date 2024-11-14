@@ -1,0 +1,237 @@
+<!-- templates/create_course.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Create a New Course</title>
+        {% include 'partials/head.html' %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+        <style>
+            .form-container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 2rem;
+                background: var(--surface);
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-md);
+            }
+
+            .form-step {
+                margin-bottom: 2rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .num-lessons-container {
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .num-lessons-container.visible {
+                max-height: 200px;
+                opacity: 1;
+                margin-top: 1.5rem;
+            }
+
+            /* Style for the topic input */
+            #topic {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            #topic:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+                outline: none;
+            }
+
+            /* Style for the number selection */
+            .num-lessons-select {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                cursor: pointer;
+                background-color: white;
+                transition: all 0.3s ease;
+            }
+
+            .num-lessons-select:focus {
+                border-color: var(--accent);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+            }
+
+            /* Style for buttons */
+            #courseForm .btn-next,
+            #courseForm .btn-generate {
+                background: var(--primary) !important;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: none;
+                letter-spacing: normal;
+                display: inline-flex; /* Changed from flex to inline-flex */
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                width: auto; /* Add this */
+                margin: 0 auto; /* Add this */
+            }
+
+            /* Add emoji to Next button */
+            #courseForm input[type="submit"].btn-next::before {
+                /* Make more specific */
+                content: "➡️";
+                display: inline-block; /* Add this */
+                margin-right: 5px; /* Add this */
+            }
+
+            /* Add emoji to Generate button */
+            #courseForm input[type="submit"].btn-generate::before {
+                /* Make more specific */
+                content: "🚀";
+                display: inline-block; /* Add this */
+                margin-right: 5px; /* Add this */
+            }
+
+            #courseForm .btn-generate {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            /* Add hover styles */
+            #courseForm .btn-next,
+            #courseForm .btn-generate {
+                background: var(--primary) !important;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: none;
+                letter-spacing: normal;
+                display: inline-block; /* Changed */
+                width: auto;
+                margin: 0 auto;
+            }
+
+            #courseForm .btn-generate {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            /* Add hover styles */
+            #courseForm .btn-next:hover,
+            #courseForm .btn-generate:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+                background: var(--primary-dark) !important;
+            }
+
+            /* Add disabled styles */
+            #courseForm .btn-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none !important;
+                box-shadow: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-container">
+            <h1>Craft Courses, Conquer Skills</h1>
+            <div class="form-container">
+                <form
+                    method="POST"
+                    action="{{ url_for('create_course') }}"
+                    id="courseForm"
+                >
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-step">
+                        <div class="form-group">
+                            {{ form.topic.label }} {{ form.topic(size=50) }}
+                        </div>
+                        {{ form.next_button(class="btn-next btn-disabled",
+                        id="nextButton") }}
+
+                        <div
+                            class="num-lessons-container"
+                            id="numLessonsContainer"
+                        >
+                            <div class="form-group">
+                                {{ form.num_lessons.label }} {{
+                                form.num_lessons(class="num-lessons-select") }}
+                            </div>
+                            {{ form.generate_button(class="btn-generate
+                            btn-disabled", id="generateButton", disabled=true)
+                            }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% include 'partials/back_button.html' with context %}
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const numLessonsContainer = document.getElementById(
+                    "numLessonsContainer",
+                );
+                const nextButton = document.getElementById("nextButton");
+                const generateButton =
+                    document.getElementById("generateButton");
+                const topicInput = document.getElementById("topic");
+
+                // Handle Next button click
+                nextButton.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    if (topicInput.value.trim()) {
+                        numLessonsContainer.classList.add("visible");
+                        // Enable generate button immediately since we don't need to wait for selection
+                        generateButton.classList.remove("btn-disabled");
+                        generateButton.disabled = false;
+                    }
+                });
+
+                // Validate topic input
+                topicInput.addEventListener("input", function () {
+                    nextButton.disabled = !this.value.trim();
+                    if (this.value.trim()) {
+                        nextButton.classList.remove("btn-disabled");
+                    } else {
+                        nextButton.classList.add("btn-disabled");
+                    }
+                });
+
+                // Initial state
+                nextButton.disabled = !topicInput.value.trim();
+                nextButton.classList.add("btn-disabled");
+            });
+        </script>
+    </body>
+</html>

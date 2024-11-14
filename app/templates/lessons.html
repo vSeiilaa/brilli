@@ -1,0 +1,39 @@
+<!-- templates/lessons.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{ course.title }}</title>
+        {% include 'partials/head.html' %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+    </head>
+    <body>
+        <div class="page-container">
+            <h1>{{ course.title }}</h1>
+            <div class="list-container">
+                {% for lesson in course.lessons %}
+                <div
+                    class="list-item"
+                    onclick="location.href='{{ url_for('lesson', course_id=course.id, lesson_id=lesson.id) }}'"
+                >
+                    <div class="title-block">
+                        <h3>{{ lesson.title }}</h3>
+                    </div>
+                    <div class="description-block">
+                        <p>{{ lesson.description }}</p>
+                    </div>
+                    <div class="image-block">
+                        <div class="emoji-cover">{{ lesson.emoji_cover }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 20px">
+                {% include 'partials/back_button.html' with context %}
+            </div>
+        </div>
+    </body>
+</html>

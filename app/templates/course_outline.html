@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Course Outline</title>
+        {% include 'partials/head.html' %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+        <style>
+            .outline-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 2rem;
+                background: var(--surface);
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-md);
+            }
+
+            .outline {
+                text-align: left;
+                margin: 2rem 0;
+                padding: 2rem;
+                background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+                border-radius: var(--radius-sm);
+            }
+
+            .outline ol {
+                counter-reset: lesson;
+                list-style: none;
+                padding: 0;
+            }
+
+            .outline ol > li {
+                counter-increment: lesson;
+                margin-bottom: 2rem;
+                position: relative;
+            }
+
+            .outline ol > li::before {
+                content: counter(lesson);
+                position: absolute;
+                left: -40px;
+                top: 0;
+                width: 28px;
+                height: 28px;
+                background: var(--primary);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+
+            .outline ol > li:first-child:last-child::before {
+                display: none;
+            }
+
+            .outline ol > li:first-child:last-child {
+                padding-left: 0;
+            }
+
+            .outline strong {
+                display: block;
+                color: var(--primary);
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .outline ul {
+                list-style: none;
+                padding-left: 0;
+                margin-left: 0;
+            }
+
+            .outline ul li {
+                position: relative;
+                padding-left: 1.2rem;
+                margin: 0.5rem 0;
+                color: var(--text-secondary);
+            }
+
+            .outline ul li::before {
+                content: "•";
+                color: var(--accent);
+                position: absolute;
+                left: 0.3rem;
+                font-size: 1em;
+            }
+
+            /* Form Styles */
+            .form-group {
+                margin-bottom: 1.5rem;
+                width: 100%;
+            }
+
+            textarea {
+                width: 100%;
+                padding: 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                min-height: 120px;
+                margin: 1rem 0;
+                transition: all 0.3s ease;
+                box-sizing: border-box;
+            }
+
+            textarea:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+                outline: none;
+            }
+
+            /* Button Styles */
+            .btn-regenerate,
+            .btn-create {
+                background: var(--primary) !important;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-block;
+                white-space: nowrap;
+            }
+
+            .btn-regenerate {
+                background: var(--secondary) !important;
+            }
+
+            .btn-create {
+                background: var(--primary) !important;
+            }
+
+            .btn-regenerate:hover,
+            .btn-create:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+                background: var(--primary-dark) !important;
+            }
+
+            .feedback-section {
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                margin-top: 0;
+                width: 100%;
+            }
+
+            .feedback-section.visible {
+                max-height: 300px;
+                opacity: 1;
+                margin-top: 2rem;
+            }
+
+            .feedback-section form {
+                width: 100%;
+            }
+
+            .show-feedback-button {
+                background: var(--secondary);
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-block;
+                margin: 1rem 0;
+            }
+
+            .show-feedback-button:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+                background: var(--primary-dark);
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 2rem;
+                border-top: 2px solid #e2e8f0;
+                padding-top: 2rem;
+                width: 100%;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .outline {
+                animation: fadeIn 0.5s ease-out forwards;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-container">
+            <h1>Your Learning Adventure Awaits 🚀</h1>
+            <div class="outline-container">
+                <div class="outline">{{ outline_html|safe }}</div>
+
+                <div style="text-align: center">
+                    <button
+                        type="button"
+                        class="show-feedback-button"
+                        id="showFeedbackButton"
+                    >
+                        ✏️ Want to change something?
+                    </button>
+                </div>
+
+                <div class="feedback-section" id="feedbackSection">
+                    <form
+                        method="POST"
+                        action="{{ url_for('regenerate_outline') }}"
+                    >
+                        {{ feedback_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ feedback_form.feedback.label }} {{
+                            feedback_form.feedback(rows=4, cols=50) }}
+                        </div>
+                        <div style="text-align: center">
+                            {{ feedback_form.submit(class="btn-regenerate",
+                            value="🔄 Regenerate") }}
+                        </div>
+                    </form>
+                </div>
+
+                <div class="button-container">
+                    <form
+                        method="POST"
+                        action="{{ url_for('confirm_course_creation') }}"
+                        style="width: auto"
+                    >
+                        {{ confirm_form.hidden_tag() }} {{
+                        confirm_form.submit(class="btn-create") }}
+                    </form>
+                </div>
+            </div>
+            {% include 'partials/back_button.html' %}
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const showFeedbackButton =
+                    document.getElementById("showFeedbackButton");
+                const feedbackSection =
+                    document.getElementById("feedbackSection");
+
+                showFeedbackButton.addEventListener("click", function () {
+                    feedbackSection.classList.add("visible");
+                    showFeedbackButton.style.display = "none";
+
+                    feedbackSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

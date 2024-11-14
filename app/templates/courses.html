@@ -1,0 +1,44 @@
+<!-- templates/courses.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Course selection</title>
+        {% include 'partials/head.html' %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+    </head>
+    <body>
+        <div class="page-container">
+            <h1>What Will You Master Today? ✨</h1>
+            <div class="list-container">
+                {% for course in courses %}
+                <div
+                    class="list-item"
+                    onclick="location.href='{{ url_for('show_lessons', course_id=course.id) }}'"
+                >
+                    <div class="title-block">
+                        <h2>{{ course.title }}</h2>
+                    </div>
+                    <div class="description-block">
+                        <p>{{ course.description }}</p>
+                    </div>
+                    <div class="image-block">
+                        <div class="emoji-cover">{{ course.emoji_cover }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 20px">
+                <button
+                    onclick="location.href='{{ url_for('create_course') }}'"
+                    class="create-course-button"
+                >
+                    ✨ Create a Course
+                </button>
+            </div>
+        </div>
+    </body>
+</html>

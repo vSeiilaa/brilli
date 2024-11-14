@@ -1,0 +1,41 @@
+<!-- templates/course.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Interactive Course Prototype</title>
+        {% include 'partials/head.html' %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/styles.css') }}"
+        />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="{{ url_for('static', filename='favicon.ico') }}"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <div class="content" id="course-content">
+                {% for section in sections %} {% set index = loop.index0 %} {%
+                set form = forms[index] %} {% set feedback_type = '' %} {% set
+                feedback_message = '' %} {% include 'section.html' with context
+                %} {% endfor %} {% if progress >= total_sections %} {% include
+                'completion_message.html' %} {% endif %}
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="vertical-progress-bar-container">
+                    <div class="vertical-progress-bar">
+                        <div
+                            class="vertical-progress-fill"
+                            style="height: {{ progress_percentage }}%;"
+                        ></div>
+                    </div>
+                </div>
+                {% include 'partials/back_button.html' with context %}
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+</html>
