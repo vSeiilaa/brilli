@@ -1,1 +1,16 @@
-
+[
+  {
+    "id": "user_course_1731521455",
+    "title": "How To Create An Online Course",
+    "description": "Master online course creation from concept to launch.",
+    "emoji_cover": "💻 🎥 🚀",
+    "lessons": [
+      {
+        "id": "lesson1",
+        "title": "Lesson 1: Course Design & Planning",
+        "description": "",
+        "emoji_cover": "📝 🎯 💡"
+      }
+    ]
+  }
+]
